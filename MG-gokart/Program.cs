@@ -61,7 +61,7 @@ namespace MG_gokart
             }
             Console.WriteLine();
             List<gokart> versenyzok = new List<gokart>();
-            Dictionary<DateTime, ArrayList> idopontok = new Dictionary<DateTime, ArrayList>();
+            Dictionary<DateTime, List<gokart>> idopontok = new Dictionary<DateTime, List<gokart>>();
             List<string> palya = new List<string>() { "天井-GoKart", "8879 Kerkateskánd, Csavargyár utca 56.",  "0692697752", "jovalasztas.hu"};
             StreamReader knev = new StreamReader("../../keresztnevek.txt");
             StreamReader vnev = new StreamReader("../../vezeteknevek.txt");
@@ -74,15 +74,14 @@ namespace MG_gokart
             DateTime now = DateTime.Now;
             DateTime idopont = new DateTime(now.Year, now.Month, now.Day, 08, 00, 00);
             Random rnd = new Random();
-            while (idopont.Day < DateTime.DaysInMonth(now.Year, now.Month))
+            while (idopont.Day <= DateTime.DaysInMonth(now.Year, now.Month) && idopont.Month == now.Month)
             {
-                Console.WriteLine(idopont);
-                idopontok.Add(idopont, new ArrayList());
+                idopontok.Add(idopont, new List<gokart>());
                 idopont = idopont.AddHours(1);
                 if (idopont.Hour >= 19)
                 {
-                    idopont.AddDays(1);
-                    idopont = new DateTime(idopont.Year, idopont.Month, idopont.Day+1, 08, 00, 00);
+                    idopont = idopont.AddDays(1);
+                    idopont = new DateTime(idopont.Year, idopont.Month, idopont.Day, 08, 00, 00);
                     continue;
                 }
             }
@@ -91,18 +90,25 @@ namespace MG_gokart
                 int honap = rnd.Next(1, 13);
                 DateTime ev = new DateTime(rnd.Next(1925, 2026), 01, 01);
                 DateTime szulido = new DateTime(ev.Year, honap, rnd.Next(1, DateTime.DaysInMonth(ev.Year, honap)));
-                Console.WriteLine(szulido);
                 bool felnotte = (DateTime.Now - szulido).TotalDays >= 18;
                 string mentesknev = Ekezetmentesit(keresztnev[rnd.Next(0, keresztnev.Count)]).Replace("'", "").Trim();
                 string mentesvnev = Ekezetmentesit(vezeteknev[rnd.Next(0, vezeteknev.Count)]).Replace("'", "").Trim();
                 versenyzok.Add(new gokart(mentesvnev, mentesknev, szulido, felnotte, $"GO-{mentesvnev}{mentesknev}-{Convert.ToString(szulido.Year)}{Convert.ToString(szulido.Month)}{Convert.ToString(szulido.Day)}", $"{(mentesvnev+"."+mentesknev).ToLower()}@gmail.com"));
             }
 
-            foreach (var item in versenyzok)
+           
+
+            int hatralevo_foglalasok = idopontok.Count;
+
+            for (int i = 0; i < hatralevo_foglalasok; i++)
             {
-                Console.WriteLine(item.vazonosito);
+                Console.WriteLine(i);
+                
             }
-            
+            foreach (var item in idopontok.Keys)
+            {
+                Console.WriteLine(item);
+            }
             Console.WriteLine();
             Console.WriteLine("Nyomja meg az ENTER-t a kilépéshez");
             Console.ReadLine();
