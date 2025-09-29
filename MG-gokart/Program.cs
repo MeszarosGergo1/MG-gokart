@@ -68,7 +68,7 @@ namespace MG_gokart
             for (int i = 0; i < rnd.Next(1,151); i++)
             {
                 int honap = rnd.Next(1, 13);
-                DateTime ev = new DateTime(rnd.Next(1925, 2026));s
+                DateTime ev = new DateTime(rnd.Next(1925, 2026));
                 DateTime szulido = new DateTime(ev.Year, honap, rnd.Next(1, DateTime.DaysInMonth(ev.Year, honap)));
                 bool felnotte = (DateTime.Now - szulido).TotalDays >= 18;
                 //folyamatban lévő munka az ez alatt lévő sorban
