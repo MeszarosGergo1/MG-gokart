@@ -96,8 +96,6 @@ namespace MG_gokart
                 versenyzok.Add(new gokart(mentesvnev, mentesknev, szulido, felnotte, $"GO-{mentesvnev}{mentesknev}-{Convert.ToString(szulido.Year)}{Convert.ToString(szulido.Month)}{Convert.ToString(szulido.Day)}", $"{(mentesvnev+"."+mentesknev).ToLower()}@gmail.com"));
             }
 
-           
-
             int hatralevo_foglalasok = idopontok.Count;
 
             for (int i = 0; i < hatralevo_foglalasok; i++)
@@ -105,6 +103,13 @@ namespace MG_gokart
                 Console.WriteLine(i);
                 
             }
+
+            while (hatralevo_foglalasok >= 8)
+            {
+                int foglalas = rnd.Next(8, 21);
+
+            }
+
             foreach (var item in idopontok.Keys)
             {
                 Console.WriteLine(item);
