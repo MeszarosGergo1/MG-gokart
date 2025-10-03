@@ -79,7 +79,7 @@ namespace MG_gokart
             }
             Console.WriteLine();
             List<gokart> versenyzok = new List<gokart>();
-            Dictionary<List<DateTime>, List<gokart>> idopontok = new Dictionary<List<DateTime>, List<gokart>>();
+            Dictionary<List<ArrayList>, List<gokart>> idopontok = new Dictionary<List<ArrayList>, List<gokart>>();
             List<string> palya = new List<string>() { "天井-GoKart", "8879 Kerkateskánd, Csavargyár utca 56.",  "0692697752", "jovalasztas.hu"};
             StreamReader knev = new StreamReader("../../keresztnevek.txt");
             StreamReader vnev = new StreamReader("../../vezeteknevek.txt");
@@ -94,16 +94,18 @@ namespace MG_gokart
             Random rnd = new Random();
             while (idopont.Day <= DateTime.DaysInMonth(now.Year, now.Month) && idopont.Month == now.Month)
             {
-                List<DateTime> ideig = new List<DateTime>();
+                ArrayList ideig = new ArrayList();
                 while(idopont.Hour <= 18)
                 {
+                    //foglalt-e [true/false]
+                    ideig[0] = false;
                     ideig.Add(idopont);
                     idopont = idopont.AddHours(1);  
                     continue;
                 }
                 idopont = idopont.AddDays(1);
                 idopont = new DateTime(idopont.Year, idopont.Month, idopont.Day, 08, 00, 00);   
-                idopontok.Add(ideig, new List<gokart>());
+                idopontok.Add(new List<ArrayList>() {ideig}, new List<gokart>());
             }
             for (int i = 0; i < rnd.Next(1,151); i++)
             {
@@ -117,7 +119,7 @@ namespace MG_gokart
             }
 
             int hatralevo_foglalasok = idopontok.Count;
-
+            /*
             while(hatralevo_foglalasok > 0)
             {
                 List<gokart> ideig = new List<gokart>();
@@ -153,6 +155,15 @@ namespace MG_gokart
                     idopontok[idopontok.Keys.ToList()[rnd.Next(0, idopontok.Keys.ToList().Count)]] = ideig;
                     hatralevo_foglalasok -= foglalas;
                     continue;
+                }
+            }
+            */
+            foreach (var item in idopontok.Values)
+            {
+                foreach(var item2 in item)
+                {
+                    if(item2.knev == "")
+                        Console.WriteLine("fasza");
                 }
             }
             /*
