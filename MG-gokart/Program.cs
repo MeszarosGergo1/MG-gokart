@@ -45,6 +45,24 @@ namespace MG_gokart
             }
             return sb.ToString().Normalize(NormalizationForm.FormC);
         }
+
+        static void kiiratas(Dictionary<List<DateTime>, List<gokart>> idopontok)
+        {
+            for (int i = 0; i < idopontok.Keys.ToList()[0][idopontok.Keys.ToList()[0].Count - 1].ToString("yyyy.MM.dd").Length; i++)
+            {
+                Console.Write(" ");
+            }
+            Console.Write(" |");
+            for (int i = 0; i < idopontok.Keys.ToList()[0].Count; i++)
+            {
+                Console.Write($" {idopontok.Keys.ToList()[0][i].Hour}-{idopontok.Keys.ToList()[0][i].Hour + 1} |");
+            }
+            Console.WriteLine();
+            for (int i = 0; i < idopontok.Keys.Count; i++)
+            {
+                Console.WriteLine(idopontok.Keys.ToList()[i][0].ToString("yyyy.MM.dd"));
+            }
+        }
         static void Main(string[] args)
         {
             Console.OutputEncoding = Encoding.UTF8;
@@ -100,10 +118,42 @@ namespace MG_gokart
 
             int hatralevo_foglalasok = idopontok.Count;
 
-            for (int i = 0; i < hatralevo_foglalasok; i++)
+            while(hatralevo_foglalasok > 0)
             {
-                //Console.WriteLine(i);
-                
+                List<gokart> ideig = new List<gokart>();
+                if (hatralevo_foglalasok >= 20)
+                {
+                    int foglalas = rnd.Next(8, hatralevo_foglalasok + 1);
+                    for (int i = 0; i < foglalas; i++)
+                    {
+                        ideig.Add(versenyzok[rnd.Next(0, versenyzok.Count)]);
+                    }
+                    idopontok[idopontok.Keys.ToList()[rnd.Next(0, idopontok.Keys.ToList().Count)]] = ideig;
+                    hatralevo_foglalasok -= foglalas;
+                    continue;
+                }
+                if (hatralevo_foglalasok >= 8 && hatralevo_foglalasok <20) 
+                {
+                    int foglalas = rnd.Next(8,hatralevo_foglalasok+1);
+                    for (int i = 0; i < foglalas; i++)
+                    {
+                        ideig.Add(versenyzok[rnd.Next(0, versenyzok.Count)]);
+                    }
+                    idopontok[idopontok.Keys.ToList()[rnd.Next(0,   idopontok.Keys.ToList().Count)]] = ideig;
+                    hatralevo_foglalasok -= foglalas;
+                    continue;
+                }
+                else
+                {
+                    int foglalas = rnd.Next(1, hatralevo_foglalasok + 1);
+                    for (int i = 0; i < foglalas; i++)
+                    {
+                        ideig.Add(versenyzok[rnd.Next(0, versenyzok.Count)]);
+                    }
+                    idopontok[idopontok.Keys.ToList()[rnd.Next(0, idopontok.Keys.ToList().Count)]] = ideig;
+                    hatralevo_foglalasok -= foglalas;
+                    continue;
+                }
             }
             /*
             while (hatralevo_foglalasok >= 8)
@@ -112,20 +162,7 @@ namespace MG_gokart
 
             }
             */
-            for (int i = 0; i < idopontok.Keys.ToList()[0][idopontok.Keys.ToList()[0].Count - 1].ToString("yyyy.MM.dd").Length; i++)
-            {
-                Console.Write(" ");
-            }
-            Console.Write(" |");
-            for (int i = 0; i < idopontok.Keys.ToList()[0].Count; i++)
-            {
-                Console.Write($" {idopontok.Keys.ToList()[0][i].Hour}-{idopontok.Keys.ToList()[0][i].Hour+1} |");
-            }
-            Console.WriteLine();
-            for (int i = 0; i < idopontok.Keys.Count; i++)
-            {
-                Console.WriteLine(idopontok.Keys.ToList()[i][0].ToString("yyyy.MM.dd"));
-            }
+            kiiratas(idopontok);
 
             Console.WriteLine();
             Console.WriteLine("Nyomja meg az ENTER-t a kilépéshez");
