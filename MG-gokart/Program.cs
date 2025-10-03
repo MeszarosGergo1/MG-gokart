@@ -61,7 +61,7 @@ namespace MG_gokart
             }
             Console.WriteLine();
             List<gokart> versenyzok = new List<gokart>();
-            Dictionary<DateTime, List<gokart>> idopontok = new Dictionary<DateTime, List<gokart>>();
+            Dictionary<List<DateTime>, List<gokart>> idopontok = new Dictionary<List<DateTime>, List<gokart>>();
             List<string> palya = new List<string>() { "天井-GoKart", "8879 Kerkateskánd, Csavargyár utca 56.",  "0692697752", "jovalasztas.hu"};
             StreamReader knev = new StreamReader("../../keresztnevek.txt");
             StreamReader vnev = new StreamReader("../../vezeteknevek.txt");
@@ -76,14 +76,16 @@ namespace MG_gokart
             Random rnd = new Random();
             while (idopont.Day <= DateTime.DaysInMonth(now.Year, now.Month) && idopont.Month == now.Month)
             {
-                idopontok.Add(idopont, new List<gokart>());
-                idopont = idopont.AddHours(1);
-                if (idopont.Hour >= 19)
+                List<DateTime> ideig = new List<DateTime>();
+                while(idopont.Hour <= 18)
                 {
-                    idopont = idopont.AddDays(1);
-                    idopont = new DateTime(idopont.Year, idopont.Month, idopont.Day, 08, 00, 00);
+                    ideig.Add(idopont);
+                    idopont = idopont.AddHours(1);  
                     continue;
                 }
+                idopont = idopont.AddDays(1);
+                idopont = new DateTime(idopont.Year, idopont.Month, idopont.Day, 08, 00, 00);   
+                idopontok.Add(ideig, new List<gokart>());
             }
             for (int i = 0; i < rnd.Next(1,151); i++)
             {
@@ -100,20 +102,31 @@ namespace MG_gokart
 
             for (int i = 0; i < hatralevo_foglalasok; i++)
             {
-                Console.WriteLine(i);
+                //Console.WriteLine(i);
                 
             }
-
+            /*
             while (hatralevo_foglalasok >= 8)
             {
                 int foglalas = rnd.Next(8, 21);
 
             }
-
-            foreach (var item in idopontok.Keys)
+            */
+            for (int i = 0; i < idopontok.Keys.ToList()[0][idopontok.Keys.ToList()[0].Count - 1].ToString("yyyy.MM.dd").Length; i++)
             {
-                Console.WriteLine(item);
+                Console.Write(" ");
             }
+            Console.Write(" |");
+            for (int i = 0; i < idopontok.Keys.ToList()[0].Count; i++)
+            {
+                Console.Write($" {idopontok.Keys.ToList()[0][i].Hour}-{idopontok.Keys.ToList()[0][i].Hour+1} |");
+            }
+            Console.WriteLine();
+            for (int i = 0; i < idopontok.Keys.Count; i++)
+            {
+                Console.WriteLine(idopontok.Keys.ToList()[i][0].ToString("yyyy.MM.dd"));
+            }
+
             Console.WriteLine();
             Console.WriteLine("Nyomja meg az ENTER-t a kilépéshez");
             Console.ReadLine();
