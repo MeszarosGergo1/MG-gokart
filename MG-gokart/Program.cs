@@ -94,6 +94,43 @@ namespace MG_gokart
                     Console.Write("-");
                 Console.WriteLine();
             }
+            
+        }
+        static Dictionary<DateTime, Dictionary<DateTime, List<gokart>>> modositas(Dictionary<DateTime, Dictionary<DateTime, List<gokart>>> idopontok)
+        {
+            Dictionary <DateTime, Dictionary<DateTime, List<gokart>>> modositott = idopontok;
+            Dictionary<gokart, List<DateTime>> kiosztott_idopontok = new Dictionary<gokart, List<DateTime>>();
+            foreach (var konyvtar in modositott.Values)
+            {
+                foreach (var innerkonyvtar in konyvtar)
+                {
+                    if(innerkonyvtar.Value.Count > 0)
+                    {
+                        if (!kiosztott_idopontok.ContainsKey(innerkonyvtar.Value[0]))
+                        { 
+                            kiosztott_idopontok.Add(innerkonyvtar.Value[0], new List<DateTime>() { innerkonyvtar.Key });
+                        }
+                        else
+                        {
+                            kiosztott_idopontok[innerkonyvtar.Value[0]].Add(innerkonyvtar.Key);
+                        }
+                    }
+                }
+            }
+            foreach (var versenyzo in kiosztott_idopontok)
+            {
+                foreach (var idopont in versenyzo.Value)
+                {
+                    if (versenyzo.Value.Count > 1)
+                    {
+                        Console.WriteLine($"{versenyzo.Key.vazonosito} {idopont.ToString("yyyy.MM.dd")} {idopont.Hour}-{idopont.Hour + 2}");
+                        break;
+                    }
+                    else
+                        Console.WriteLine($"{versenyzo.Key.vazonosito} {idopont.ToString("yyyy.MM.dd")} {idopont.Hour}-{idopont.Hour + 1}");
+                }
+            }
+            return modositott;
         }
         static void Main(string[] args)
         {
@@ -131,8 +168,7 @@ namespace MG_gokart
                 {
                     DateTime asd = idopont;
                     asd1.Add(asd, new List<gokart>());
-                    idopont = idopont.AddHours(1);  
-                    continue;                
+                    idopont = idopont.AddHours(1);                  
                 }
                 idopontok.Add(idopont, asd1);
                 idopont = idopont.AddDays(1);
@@ -193,16 +229,8 @@ namespace MG_gokart
                 }
             }
             
-
-            /*
-            while (hatralevo_foglalasok >= 8)
-            {
-                int foglalas = rnd.Next(8, 21);
-
-            }
-            */
-
             kiiratas(idopontok);
+            modositas(idopontok);
 
             Console.WriteLine();
             Console.WriteLine("Nyomja meg az ENTER-t a kilépéshez");
