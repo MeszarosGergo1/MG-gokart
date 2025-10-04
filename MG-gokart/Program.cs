@@ -48,19 +48,43 @@ namespace MG_gokart
 
         static void kiiratas(Dictionary<DateTime, Dictionary<DateTime, List<gokart>>> idopontok)
         {
-            for (int i = 0; i < idopontok.Keys.ToList()[0].ToString().Length; i++)
+            for (int i = 0; i < idopontok.Keys.ToList()[0].ToString("yyyy.MM.dd").Length+1; i++)
             {
                 Console.Write(" ");
             }
-            Console.Write("fasz");
+            Console.Write("|");
+            for (int i = 0; i < idopontok.Values.ToList()[0].Keys.ToList().Count; i++)
+            {
+                Console.Write($"{$"   {idopontok.Values.ToList()[0].Keys.ToList()[i].Hour}-{idopontok.Values.ToList()[0].Keys.ToList()[i].Hour + 1} ", -10} |");
+            }
+            Console.WriteLine();
+            for(int i = 0; i < (idopontok.Values.ToList()[0].Keys.ToList().Count+1)*10 + (idopontok.Keys.ToList()[0].ToString("yyyy.MM.dd").Length + 2)*2; i++)
+                Console.Write("-");
+            Console.WriteLine();
             //Console.Write($"{idopontok.Keys.ToList()}");
             for (int i = 0; i < idopontok.Keys.ToList().Count; i++)
             {
+                Console.Write(idopontok.Keys.ToList()[i].ToString("yyyy.MM.dd") + " |");
                 for (int j = 0; j < idopontok[idopontok.Keys.ToList()[i]].Count; j++)
                 {
-                    
+                    if (idopontok[idopontok.Keys.ToList()[i]].Values.ToList()[j].Count == 0)
+                    {
+                        Console.ForegroundColor = ConsoleColor.Green;
+                        //Console.Write($"{$"  szabad ",-10} |");
+                        
+                    }
+                    else
+                    {
+                        Console.ForegroundColor = ConsoleColor.Red;
+                        //Console.Write($"{$"  foglalt ",-10} |");
+                    }
+                    Console.ResetColor();
                 }
+                Console.WriteLine();
             }
+            for (int i = 0; i < (idopontok.Values.ToList()[0].Keys.ToList().Count + 1) * 10 + (idopontok.Keys.ToList()[0].ToString("yyyy.MM.dd").Length + 2) * 2; i++)
+                Console.Write("-");
+            Console.WriteLine();
         }
         static void Main(string[] args)
         {
@@ -118,36 +142,31 @@ namespace MG_gokart
 
             int hatralevo_foglalasok = idopontok.Keys.Count * idopontok.Values.ToList()[0].Values.Count;
             Console.WriteLine(hatralevo_foglalasok);
-            /*
-            while(hatralevo_foglalasok > 0)
+            Console.WriteLine(versenyzok.Count);
+            while(hatralevo_foglalasok > 0 && versenyzok.Count > 0)
             {
-                Dictionary<DateTime, List<gokart>> ideig = new Dictionary<DateTime, List<gokart>>();
-                if (hatralevo_foglalasok >= 20)
+                int foglalas = 1;
+                List<gokart> ideiglenes = new List<gokart>();
+                if (versenyzok.Count > 1)
+                   foglalas = rnd.Next(1, 3);
+                int v = rnd.Next(0, versenyzok.Count);
+                Console.WriteLine($"{v}/{versenyzok.Count}");
+                ideiglenes.Add(versenyzok[v]);
+                versenyzok.RemoveAt(v);
+                
+                int randomdateint = rnd.Next(0, idopontok.Keys.ToList().Count);
+                int randomtimeint = rnd.Next(0, idopontok[idopontok.Keys.ToList()[randomdateint]].Keys.ToList().Count);
+                DateTime randomdate = idopontok.Keys.ToList()[randomdateint];
+                DateTime randomtime = idopontok[idopontok.Keys.ToList()[randomdateint]].Keys.ToList()[randomtimeint];
+                //Console.WriteLine(idopontok.Keys.ToList()[randomdate]);
+                //Console.WriteLine(idopontok[idopontok.Keys.ToList()[randomdate]].Keys.ToList()[randomtime]);
+                
+                if(foglalas>1 && randomtime.Hour!=18)
                 {
-                    int foglalas = rnd.Next(8, hatralevo_foglalasok + 1);
-                    for (int i = 0; i < foglalas; i++)
+                    if (idopontok[randomdate][randomtime].Count == 0)
                     {
-                        //versenyzok[rnd.Next(0, versenyzok.Count)
-                        ideig.Add(idopontok.Values.ToList()[0].Values.ToList()[rnd.Next(0, idopontok.Values.ToList()[0].Values.ToList().Count)]);
-                    }
-                    if(idopontok[idopontok.Keys.ToList()[rnd.Next(0, idopontok.Keys.ToList().Count)]].Count == 0)
-                    {
-                        idopontok[idopontok.Keys.ToList()[rnd.Next(0, idopontok.Keys.ToList().Count)]] = ideig;
-                        hatralevo_foglalasok -= foglalas;
-                    }
-                    else
-                        continue;
-                }
-                if (hatralevo_foglalasok >= 8 && hatralevo_foglalasok <20) 
-                {
-                    int foglalas = rnd.Next(8,hatralevo_foglalasok+1);
-                    for (int i = 0; i < foglalas; i++)
-                    {
-                        ideig.Add(versenyzok[rnd.Next(0, versenyzok.Count)]);
-                    }
-                    if (idopontok[idopontok.Keys.ToList()[rnd.Next(0, idopontok.Keys.ToList().Count)]].Count == 0)
-                    {
-                        idopontok[idopontok.Keys.ToList()[rnd.Next(0, idopontok.Keys.ToList().Count)]] = ideig;
+                        idopontok[randomdate][randomtime] = ideiglenes;
+                        idopontok[randomdate][idopontok[idopontok.Keys.ToList()[randomdateint]].Keys.ToList()[randomtimeint + 1]] = ideiglenes;
                         hatralevo_foglalasok -= foglalas;
                     }
                     else
@@ -155,21 +174,16 @@ namespace MG_gokart
                 }
                 else
                 {
-                    int foglalas = hatralevo_foglalasok;
-                    for (int i = 0; i < foglalas; i++)
+                    if (idopontok[randomdate][randomtime].Count == 0)
                     {
-                        ideig.Add(versenyzok[rnd.Next(0, versenyzok.Count)]);
-                    }
-                    if (idopontok[idopontok.Keys.ToList()[rnd.Next(0, idopontok.Keys.ToList().Count)]].Count == 0)
-                    {
-                        idopontok[idopontok.Keys.ToList()[rnd.Next(0, idopontok.Keys.ToList().Count)]] = ideig;
+                        idopontok[randomdate][randomtime] = ideiglenes;
                         hatralevo_foglalasok -= foglalas;
                     }
                     else
                         continue;
                 }
             }
-            */
+            
 
             /*
             while (hatralevo_foglalasok >= 8)
