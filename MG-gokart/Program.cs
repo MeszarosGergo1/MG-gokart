@@ -203,8 +203,6 @@ namespace MG_gokart
                 int randomtimeint = rnd.Next(0, idopontok[idopontok.Keys.ToList()[randomdateint]].Keys.ToList().Count);
                 DateTime randomdate = idopontok.Keys.ToList()[randomdateint];
                 DateTime randomtime = idopontok[idopontok.Keys.ToList()[randomdateint]].Keys.ToList()[randomtimeint];
-                //Console.WriteLine(idopontok.Keys.ToList()[randomdate]);
-                //Console.WriteLine(idopontok[idopontok.Keys.ToList()[randomdate]].Keys.ToList()[randomtime]);
                 
                 if(foglalas>1 && randomtime.Hour!=18)
                 {
@@ -228,9 +226,18 @@ namespace MG_gokart
                         continue;
                 }
             }
-            
+
             kiiratas(idopontok);
-            modositas(idopontok);
+            Console.Write("Szeretne adatokat módosítani?[i/N]: ");
+            string input = Console.ReadLine();
+            Console.Clear();
+            Console.WriteLine();
+            if (input.ToLower() == "i" || input.ToLower() == "igen")
+            {
+                idopontok = modositas(idopontok);
+                Console.WriteLine();
+                kiiratas(idopontok);
+            }
 
             Console.WriteLine();
             Console.WriteLine("Nyomja meg az ENTER-t a kilépéshez");
