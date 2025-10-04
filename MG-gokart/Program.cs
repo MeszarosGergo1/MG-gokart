@@ -67,24 +67,33 @@ namespace MG_gokart
                 Console.Write(idopontok.Keys.ToList()[i].ToString("yyyy.MM.dd") + " |");
                 for (int j = 0; j < idopontok[idopontok.Keys.ToList()[i]].Count; j++)
                 {
+                    Console.Write(" ");
                     if (idopontok[idopontok.Keys.ToList()[i]].Values.ToList()[j].Count == 0)
                     {
-                        Console.ForegroundColor = ConsoleColor.Green;
-                        //Console.Write($"{$"  szabad ",-10} |");
-                        
+                        Console.BackgroundColor = ConsoleColor.Green;
+                        for (int k = 0; k < 9; k++)
+                        {
+                            Console.Write(" ");
+                        }
+                        Console.ResetColor();
+                        Console.Write(" |");
                     }
                     else
                     {
-                        Console.ForegroundColor = ConsoleColor.Red;
-                        //Console.Write($"{$"  foglalt ",-10} |");
+                        Console.BackgroundColor = ConsoleColor.Red;
+                        for (int k = 0; k < 9; k++)
+                        {
+                            Console.Write(" ");
+                        }
+                        Console.ResetColor();
+                        Console.Write(" |");
                     }
-                    Console.ResetColor();
                 }
                 Console.WriteLine();
+                for (int asd = 0; asd < (idopontok.Values.ToList()[0].Keys.ToList().Count + 1) * 10 + (idopontok.Keys.ToList()[0].ToString("yyyy.MM.dd").Length + 2) * 2; asd++)
+                    Console.Write("-");
+                Console.WriteLine();
             }
-            for (int i = 0; i < (idopontok.Values.ToList()[0].Keys.ToList().Count + 1) * 10 + (idopontok.Keys.ToList()[0].ToString("yyyy.MM.dd").Length + 2) * 2; i++)
-                Console.Write("-");
-            Console.WriteLine();
         }
         static void Main(string[] args)
         {
