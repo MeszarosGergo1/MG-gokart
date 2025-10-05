@@ -45,7 +45,6 @@ namespace MG_gokart
             }
             return sb.ToString().Normalize(NormalizationForm.FormC);
         }
-
         static void kiiratas(Dictionary<DateTime, Dictionary<DateTime, List<gokart>>> idopontok)
         {
             for (int i = 0; i < idopontok.Keys.ToList()[0].ToString("yyyy.MM.dd").Length+1; i++)
@@ -93,8 +92,7 @@ namespace MG_gokart
                 for (int asd = 0; asd < (idopontok.Values.ToList()[0].Keys.ToList().Count + 1) * 10 + (idopontok.Keys.ToList()[0].ToString("yyyy.MM.dd").Length + 2) * 2; asd++)
                     Console.Write("-");
                 Console.WriteLine();
-            }
-            
+            }   
         }
         static Dictionary<DateTime, Dictionary<DateTime, List<gokart>>> modositas(Dictionary<DateTime, Dictionary<DateTime, List<gokart>>> idopontok)
         {
@@ -130,6 +128,115 @@ namespace MG_gokart
                         Console.WriteLine($"{versenyzo.Key.vazonosito} {idopont.ToString("yyyy.MM.dd")} {idopont.Hour}-{idopont.Hour + 1}");
                 }
             }
+            Console.Write("Mi az azonosítója?: ");
+            string azonosito = Console.ReadLine().Trim();
+            if(kiosztott_idopontok.Keys.Any(gokart => gokart.vazonosito == azonosito))
+            {
+                gokart vazonito = kiosztott_idopontok.Keys.First(g => g.vazonosito == azonosito);
+                if(kiosztott_idopontok[vazonito].Count > 1)
+                    Console.WriteLine($"Talált időpont: {kiosztott_idopontok[vazonito][0].Hour}-{kiosztott_idopontok[vazonito][1].Hour+1}");
+                else
+                    Console.WriteLine($"Talált időpont: {kiosztott_idopontok[vazonito][0].Hour}-{kiosztott_idopontok[vazonito][0].Hour + 1}");
+                Console.Write("Módosítani szeretne, törölni, vagy időpontot foglalni?[1/2/3]: ");
+                string valasztas = Console.ReadLine().Trim();
+                switch (valasztas)
+                {
+                    case "1":
+                    case "3":
+                        {
+                            Console.Write("Adja meg az új időpontot[yyyy.MM.dd kezdőóra]: ");
+                            string ujidopont = Console.ReadLine().Trim();
+                            Console.Write("1 vagy 2 órát szeretne foglalni?: ");
+                            string egyketto = Console.ReadLine().Trim();
+                            string[] reszek = ujidopont.Split(' ');
+                            if (reszek.Length != 2)
+                            {
+                                Console.WriteLine("Hibás formátum! (pl: 2025.10.10 9)");
+                                break;
+                            }
+                            DateTime datum;
+                            int ora;
+                            try
+                            {
+                                datum = DateTime.Parse(reszek[0]);
+                                ora = Convert.ToInt32(reszek[1]);
+                            }
+                            catch
+                            {
+                                Console.WriteLine("Hibás dátum vagy óra!");
+                                break;
+                            }
+                            // Find the correct outer key (date with any hour)
+                            DateTime napKulcs = modositott.Keys.FirstOrDefault(d => d.Year == datum.Year && d.Month == datum.Month && d.Day == datum.Day);
+                            if (napKulcs == default(DateTime))
+                            {
+                                Console.WriteLine("Nincs ilyen nap!");
+                                break;
+                            }
+                            DateTime foglalasKezdete = new DateTime(napKulcs.Year, napKulcs.Month, napKulcs.Day, ora, 0, 0);
+
+                            if (!modositott[napKulcs].ContainsKey(foglalasKezdete))
+                            {
+                                Console.WriteLine("Nincs ilyen időpont, vagy már foglalt!");
+                                break;
+                            }
+
+                            bool foglalhato = modositott[napKulcs][foglalasKezdete].Count == 0;
+                            if (egyketto == "2")
+                            {
+                                DateTime kovetkezo = foglalasKezdete.AddHours(1);
+                                foglalhato = foglalhato && modositott[napKulcs].ContainsKey(kovetkezo) && modositott[napKulcs][kovetkezo].Count == 0;
+                            }
+
+                            if (!foglalhato)
+                            {
+                                Console.WriteLine("Az időpont foglalt!");
+                                break;
+                            }
+
+                            foreach (var nap in modositott.Keys)
+                            {
+                                foreach (var oraKvp in modositott[nap].Keys.ToList())
+                                {
+                                    modositott[nap][oraKvp].RemoveAll(g => g.vazonosito == vazonito.vazonosito);
+                                    if (modositott[nap][oraKvp].Count == 0)
+                                    {
+                                        modositott[nap][oraKvp] = new List<gokart>();
+                                    }
+                                }
+                            }
+
+                            modositott[napKulcs][foglalasKezdete] = new List<gokart> { vazonito };
+                            if (egyketto == "2")
+                            {
+                                DateTime kovetkezo = foglalasKezdete.AddHours(1);
+                                modositott[napKulcs][kovetkezo] = new List<gokart> { vazonito };
+                            }
+
+                            Console.WriteLine("Sikeres módosítás!");
+                            break;
+                        }
+                    case "2":
+                        {
+                            foreach (var nap in modositott.Keys)
+                            {
+                                foreach (var oraKvp in modositott[nap].Keys.ToList())
+                                {
+                                    modositott[nap][oraKvp].RemoveAll(g => g.vazonosito == vazonito.vazonosito);
+                                    if (modositott[nap][oraKvp].Count == 0)
+                                    {
+                                        modositott[nap][oraKvp] = new List<gokart>();
+                                    }
+                                }
+                            }
+                            Console.WriteLine("Sikeres törlés!");
+                            break;
+                        }
+                }
+            }
+            else
+                Console.WriteLine("Nincs ilyen azonosító!");
+            kiiratas(modositott);
             return modositott;
         }
         static void Main(string[] args)
@@ -141,7 +248,6 @@ namespace MG_gokart
             */
             string fejlec = "天井-GoKart";
             Console.WriteLine(fejlec);
-
             for (int i = 0; i < fejlec.Length; i++)
             {
                 Console.Write("-");
@@ -184,10 +290,7 @@ namespace MG_gokart
                 string mentesvnev = Ekezetmentesit(vezeteknev[rnd.Next(0, vezeteknev.Count)]).Replace("'", "").Trim();
                 versenyzok.Add(new gokart(mentesvnev, mentesknev, szulido, felnotte, $"GO-{mentesvnev}{mentesknev}-{Convert.ToString(szulido.Year)}{Convert.ToString(szulido.Month)}{Convert.ToString(szulido.Day)}", $"{(mentesvnev+"."+mentesknev).ToLower()}@gmail.com"));
             }
-
             int hatralevo_foglalasok = idopontok.Keys.Count * idopontok.Values.ToList()[0].Values.Count;
-            Console.WriteLine(hatralevo_foglalasok);
-            Console.WriteLine(versenyzok.Count);
             while(hatralevo_foglalasok > 0 && versenyzok.Count > 0)
             {
                 int foglalas = 1;
@@ -195,15 +298,12 @@ namespace MG_gokart
                 if (versenyzok.Count > 1)
                    foglalas = rnd.Next(1, 3);
                 int v = rnd.Next(0, versenyzok.Count);
-                Console.WriteLine($"{v}/{versenyzok.Count}");
                 ideiglenes.Add(versenyzok[v]);
                 versenyzok.RemoveAt(v);
-                
                 int randomdateint = rnd.Next(0, idopontok.Keys.ToList().Count);
                 int randomtimeint = rnd.Next(0, idopontok[idopontok.Keys.ToList()[randomdateint]].Keys.ToList().Count);
                 DateTime randomdate = idopontok.Keys.ToList()[randomdateint];
                 DateTime randomtime = idopontok[idopontok.Keys.ToList()[randomdateint]].Keys.ToList()[randomtimeint];
-                
                 if(foglalas>1 && randomtime.Hour!=18)
                 {
                     if (idopontok[randomdate][randomtime].Count == 0)
@@ -226,19 +326,21 @@ namespace MG_gokart
                         continue;
                 }
             }
-
             kiiratas(idopontok);
             Console.Write("Szeretne adatokat módosítani?[i/N]: ");
             string input = Console.ReadLine();
             Console.Clear();
             Console.WriteLine();
-            if (input.ToLower() == "i" || input.ToLower() == "igen")
+            while(input.ToLower() == "i" || input.ToLower() == "igen")
             {
-                idopontok = modositas(idopontok);
-                Console.WriteLine();
-                kiiratas(idopontok);
+                if (input.ToLower() == "i" || input.ToLower() == "igen")
+                {
+                    idopontok = modositas(idopontok);
+                    Console.WriteLine();
+                }
+                Console.Write("Szeretne még adatokat módosítani?[i/N]: ");
+                input = Console.ReadLine();
             }
-
             Console.WriteLine();
             Console.WriteLine("Nyomja meg az ENTER-t a kilépéshez");
             Console.ReadLine();
