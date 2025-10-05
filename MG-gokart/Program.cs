@@ -290,6 +290,7 @@ namespace MG_gokart
                 string mentesvnev = Ekezetmentesit(vezeteknev[rnd.Next(0, vezeteknev.Count)]).Replace("'", "").Trim();
                 versenyzok.Add(new gokart(mentesvnev, mentesknev, szulido, felnotte, $"GO-{mentesvnev}{mentesknev}-{Convert.ToString(szulido.Year)}{Convert.ToString(szulido.Month)}{Convert.ToString(szulido.Day)}", $"{(mentesvnev+"."+mentesknev).ToLower()}@gmail.com"));
             }
+            kiiratas(idopontok);
             int hatralevo_foglalasok = idopontok.Keys.Count * idopontok.Values.ToList()[0].Values.Count;
             while(hatralevo_foglalasok > 0 && versenyzok.Count > 0)
             {
@@ -326,6 +327,10 @@ namespace MG_gokart
                         continue;
                 }
             }
+            Console.WriteLine();
+            Console.WriteLine();
+            Console.WriteLine("Random kioszotott időpontok:");
+            Console.WriteLine();
             kiiratas(idopontok);
             Console.Write("Szeretne adatokat módosítani?[i/N]: ");
             string input = Console.ReadLine();
